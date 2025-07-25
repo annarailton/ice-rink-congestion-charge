@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ice-rink-congestion-charge"
+version = "0.1.0"
+description = "A Jupyter notebook for analyzing the data from ice rink users about impact of the proposed congestion charge"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    {name = "Anna Railton", email = "anna.railton@gmail.com"}
+]
+keywords = ["analysis", "data-science"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "matplotlib>=3.10",
+    "numpy>=2.3",
+    "pandas>=2.3",
+    "plotly>=6.2",
+    "requests>=2.32",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=25.1",
+    "ipykernel>=6.30",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
