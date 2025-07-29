@@ -67,4 +67,8 @@ env.bak/
 venv.bak/
 
 # Don't want data committed
-data/
+data/#
+
+# Don't want notebooks committed
+*.ipynb_checkpoints
+*.ipynb
