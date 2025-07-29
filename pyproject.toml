@@ -25,6 +25,9 @@ dependencies = [
     "pandas>=2.3",
     "plotly>=6.2",
     "requests>=2.32",
+    "tabulate>=0.9",
+    "pgeocode>=0.5.0",
+    "geopy>=2.4.1",
 ]
 
 [project.optional-dependencies]
