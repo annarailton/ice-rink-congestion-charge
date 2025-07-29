@@ -1,10 +1,10 @@
+# %%
 """To convert this script to a Jupyter notebook, use e.g. the VSCode "Export current file as Jupyter notebook" command.
 
 This is being saved as a script so the diffs are cleaner and I don't accidentally commit a notebook with PID in it."""
 
 # %% [markdown]
 # # Ice rink user group analysis
- 
 
 # %%
 import matplotlib.pyplot as plt
@@ -417,6 +417,82 @@ freq_results
 survey(freq_results, custom_order, figsize=(14, 7))
 plt.title("Frequency of visits to the ice rink, by club type")
 plt.show()
+
+# %% [markdown]
+# ## Parking costs
+
+# %%
+df['car_parking_cost'].value_counts()
+
+# %%
+custom_order = [
+    "£0 (e.g., drop-off/pick-up only, free parking)",
+    "£1 - £5",
+    "£6 - £10",
+    "£11 - £15",
+    "More than £15",
+]
+
+freq_results = {
+    "All": df["car_parking_cost"]
+    .value_counts(dropna=True, normalize=True)
+    .reindex(custom_order)
+    .tolist(),
+    "Ice hockey": df[df["hockey_club"]]["car_parking_cost"]
+    .value_counts(dropna=True, normalize=True)
+    .reindex(custom_order)
+    .tolist(),
+    "Figure skating": df[df["figure_skating_club"]]["car_parking_cost"]
+    .value_counts(dropna=True, normalize=True)
+    .reindex(custom_order)
+    .tolist(),
+    "Dance": df[df["dance_club"]]["car_parking_cost"]
+    .value_counts(dropna=True, normalize=True)
+    .reindex(custom_order)
+    .tolist(),
+    "No club": df[~df["hockey_club"] & ~df["figure_skating_club"] & ~df["dance_club"]][
+        "car_parking_cost"
+    ]
+    .value_counts(dropna=True, normalize=True)
+    .reindex(custom_order)
+    .tolist(),
+}
+freq_results = {k: list(map(lambda x: x * 100, v)) for k, v in freq_results.items()}
+for key in freq_results:
+    freq_results[key] = [0 if np.isnan(x) else x for x in freq_results[key]]
+freq_results
+
+survey(freq_results, custom_order, figsize=(14, 7))
+plt.title("Car parking costs, by club type")
+plt.show()
+
+# %%
+# Add a column for median car parking cost so we can work out the average extra cost from the congestion charge
+def median_parking_cost(cost):
+    """Convert the car parking cost to a median value. Yes this is a hard-coded ball of hacks"""
+    if pd.isna(cost) or cost == "£0 (e.g., drop-off/pick-up only, free parking)":
+        return 0
+    elif cost == "£1 - £5":
+        return 3  # Midpoint of £1 and £5
+    elif cost == "£6 - £10":
+        return 8  # Midpoint of £6 and £10
+    elif cost == "£11 - £15":
+        return 13  # Midpoint of £11 and £15
+    elif cost == "More than £15":
+        return 15  # Arbitrary value 
+    else:
+        return np.nan
+    
+df["median_parking_cost"] = df["car_parking_cost"].apply(median_parking_cost)
+
+# %%
+df['median_parking_cost'].mean()
+
+# %% [markdown]
+# ## Mobility issues
+
+# %%
+df['special_needs'].value_counts()
 
 # %% [markdown]
 # ## Plot the postcodes where people live
